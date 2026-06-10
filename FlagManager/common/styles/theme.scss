@@ -1,0 +1,176 @@
+.fm-page {
+	min-height: 100vh;
+	background-color: $fm-color-bg;
+	padding-bottom: 40rpx;
+}
+
+.fm-page-padding {
+	padding-left: $fm-page-padding;
+	padding-right: $fm-page-padding;
+}
+
+.fm-card {
+	background-color: $fm-color-card;
+	border-radius: $fm-radius-card;
+	padding: 28rpx;
+	margin-bottom: 24rpx;
+	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.fm-btn-primary {
+	background-color: $fm-color-primary;
+	color: #fff;
+	border-radius: $fm-radius-button;
+	height: 88rpx;
+	line-height: 88rpx;
+	text-align: center;
+	font-size: 30rpx;
+	border: none;
+
+	&::after {
+		border: none;
+	}
+}
+
+.fm-btn-outline {
+	background-color: transparent;
+	color: $fm-color-primary;
+	border: 2rpx solid $fm-color-primary;
+	border-radius: $fm-radius-button;
+	height: 80rpx;
+	line-height: 80rpx;
+	text-align: center;
+	font-size: 28rpx;
+
+	&::after {
+		border: none;
+	}
+}
+
+.fm-btn-block {
+	width: 100%;
+}
+
+.fm-fixed-bottom {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 24rpx $fm-page-padding;
+	padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+	background-color: $fm-color-card;
+	box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.fm-form-item {
+	margin-bottom: 32rpx;
+}
+
+.fm-form-label {
+	font-size: 28rpx;
+	color: $fm-color-text;
+	margin-bottom: 16rpx;
+	font-weight: 500;
+}
+
+.fm-form-input {
+	background-color: #f9fafb;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	width: 100%;
+	box-sizing: border-box;
+	height: 88rpx;
+	line-height: 88rpx;
+	padding: 0 24rpx;
+}
+
+.fm-form-display {
+	background-color: #f9fafb;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 88rpx;
+	padding: 24rpx;
+	display: flex;
+	align-items: center;
+}
+
+.fm-input-placeholder {
+	color: #9ca3af;
+	font-size: 28rpx;
+	line-height: 88rpx;
+}
+
+.fm-form-textarea {
+	background-color: #f9fafb;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	font-size: 28rpx;
+	width: 100%;
+	min-height: 160rpx;
+	box-sizing: border-box;
+}
+
+.fm-tag-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16rpx;
+}
+
+.fm-tag {
+	padding: 12rpx 28rpx;
+	border-radius: $fm-radius-button;
+	font-size: 26rpx;
+	color: $fm-color-text-secondary;
+	background-color: #f3f4f6;
+	border: 2rpx solid transparent;
+
+	&.active {
+		color: $fm-color-primary;
+		background-color: $fm-color-primary-light;
+		border-color: $fm-color-primary;
+	}
+}
+
+.fm-status-tag {
+	display: inline-block;
+	padding: 4rpx 16rpx;
+	border-radius: 8rpx;
+	font-size: 22rpx;
+
+	&.active {
+		color: $fm-color-primary;
+		background-color: $fm-color-primary-light;
+	}
+
+	&.pending {
+		color: $fm-color-text-secondary;
+		background-color: #f3f4f6;
+	}
+
+	&.done {
+		color: #059669;
+		background-color: #d1fae5;
+	}
+
+	&.paused {
+		color: #b45309;
+		background-color: #fef3c7;
+	}
+
+	&.abandoned {
+		color: $fm-color-text-secondary;
+		background-color: #f3f4f6;
+	}
+}
+
+.fm-chevron-right {
+	display: inline-block;
+	width: 14rpx;
+	height: 14rpx;
+	border-top: 3rpx solid $fm-color-text-secondary;
+	border-right: 3rpx solid $fm-color-text-secondary;
+	transform: rotate(45deg);
+	flex-shrink: 0;
+}

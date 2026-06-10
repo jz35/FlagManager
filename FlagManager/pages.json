@@ -1,0 +1,94 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {}
+	},
+	"pages": [
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/stats/stats",
+			"style": {
+				"navigationBarTitleText": "统计"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/flag/create",
+			"style": {
+				"navigationBarTitleText": "新建 Flag"
+			}
+		},
+		{
+			"path": "pages/flag/detail",
+			"style": {
+				"navigationBarTitleText": "Flag 详情"
+			}
+		},
+		{
+			"path": "pages/flag/list",
+			"style": {
+				"navigationBarTitleText": "我的 Flag"
+			}
+		},
+		{
+			"path": "pages/stage/create",
+			"style": {
+				"navigationBarTitleText": "新建阶段"
+			}
+		},
+		{
+			"path": "pages/stage/detail",
+			"style": {
+				"navigationBarTitleText": "阶段详情"
+			}
+		},
+		{
+			"path": "pages/checkin/create",
+			"style": {
+				"navigationBarTitleText": "今日打卡"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "FlagManager",
+		"navigationBarBackgroundColor": "#F6F7F5",
+		"backgroundColor": "#F6F7F5"
+	},
+	"tabBar": {
+		"color": "#8A8F98",
+		"selectedColor": "#1F8A5B",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/home/home",
+				"iconPath": "static/tabbar/home.png",
+				"selectedIconPath": "static/tabbar/home-active.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/stats/stats",
+				"iconPath": "static/tabbar/stats.png",
+				"selectedIconPath": "static/tabbar/stats-active.png",
+				"text": "统计"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/tabbar/mine.png",
+				"selectedIconPath": "static/tabbar/mine-active.png",
+				"text": "我的"
+			}
+		]
+	}
+}

@@ -1,0 +1,17 @@
+# 内部文档（不上传 GitHub）
+FlagManager-低保真原型.md
+FlagManager-前端设计文档.md
+FlagManager-需求文档.md
+
+# uni-app 构建产物
+FlagManager/unpackage/
+
+# 依赖
+node_modules/
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
