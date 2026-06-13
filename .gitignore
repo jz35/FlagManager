@@ -1,0 +1,57 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# --- Frontend (uni-app) ---
+FlagManager/node_modules/
+FlagManager/unpackage/dist/
+FlagManager/unpackage/release/
+.hbuilderx/
+
+# --- Backend (Python / FastAPI) ---
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/**/*$py.class
+backend/.pytest_cache/
+backend/pytest-cache-files-*/
+backend/.coverage
+backend/htmlcov/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/*.egg-info/
+backend/dist/
+backend/build/
+
+# Docker (local overrides only)
+docker-compose.override.yml
+
+# Misc
+*.tmp
+*.bak
+.cache/
+.pytest_cache
