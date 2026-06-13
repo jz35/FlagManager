@@ -1,0 +1,38 @@
+.detail-body.data-v-e26751c2 {
+  padding-top: 24rpx;
+  padding-bottom: 160rpx;
+}
+.stage-goal.data-v-e26751c2 {
+  display: block;
+  font-size: 28rpx;
+  line-height: 1.6;
+  margin-bottom: 16rpx;
+}
+.stage-meta.data-v-e26751c2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-bottom: 20rpx;
+}
+.reward-card__progress.data-v-e26751c2 {
+  display: block;
+  font-size: 26rpx;
+  color: #1f8a5b;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+.reward-card__item.data-v-e26751c2 {
+  display: block;
+  font-size: 28rpx;
+  margin-bottom: 12rpx;
+}
+.reward-card__item.data-v-e26751c2:last-child {
+  margin-bottom: 0;
+}
+.empty-tip.data-v-e26751c2 {
+  font-size: 26rpx;
+  color: #6b7280;
+  text-align: center;
+}

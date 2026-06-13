@@ -1,0 +1,19 @@
+.fm-section.data-v-1a291c55 {
+  margin-bottom: 32rpx;
+}
+.fm-section__header.data-v-1a291c55 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 4rpx;
+}
+.fm-section__title.data-v-1a291c55 {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2933;
+}
+.fm-section__action.data-v-1a291c55 {
+  font-size: 26rpx;
+  color: #1f8a5b;
+}

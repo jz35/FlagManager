@@ -1,0 +1,39 @@
+.fm-heatmap__grid.data-v-74e23396 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6rpx;
+}
+.fm-heatmap__cell.data-v-74e23396 {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 4rpx;
+}
+.fm-heatmap__cell.level-0.data-v-74e23396 {
+  background-color: #ebedf0;
+}
+.fm-heatmap__cell.level-1.data-v-74e23396 {
+  background-color: #c6e9cc;
+}
+.fm-heatmap__cell.level-2.data-v-74e23396 {
+  background-color: #9be9a8;
+}
+.fm-heatmap__cell.level-3.data-v-74e23396 {
+  background-color: #40c463;
+}
+.fm-heatmap__cell.level-4.data-v-74e23396 {
+  background-color: #239a4d;
+}
+.fm-heatmap__cell.level-5.data-v-74e23396 {
+  background-color: #145c32;
+}
+.fm-heatmap__legend.data-v-74e23396 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6rpx;
+  margin-top: 16rpx;
+}
+.fm-heatmap__legend-text.data-v-74e23396 {
+  font-size: 20rpx;
+  color: #6b7280;
+}

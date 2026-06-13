@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "阶段详情",
+  "usingComponents": {
+    "fm-progress-bar": "../../components/fm-progress-bar/fm-progress-bar",
+    "fm-section": "../../components/fm-section/fm-section",
+    "fm-stat-card": "../../components/fm-stat-card/fm-stat-card",
+    "fm-checkin-card": "../../components/fm-checkin-card/fm-checkin-card"
+  }
+}

@@ -3,7 +3,7 @@
 		<view class="fm-page-padding detail-body">
 			<view class="detail-top">
 				<text class="detail-top__title">{{ flag.title }}</text>
-				<text class="detail-top__more" @click="showActions">···</text>
+				<text v-if="showMoreMenu" class="detail-top__more" @click="showActions">···</text>
 			</view>
 			<view class="fm-card info-card">
 				<text class="info-card__desc">{{ flag.description }}</text>
@@ -49,12 +49,20 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import { formatDate } from '@/common/utils/date.js'
 import { buildHeatmapDays, getFlagProgress, getStageProgress, getCheckinsByDate } from '@/common/utils/stats.js'
+import { canFlagCheckin } from '@/common/utils/validate.js'
 
 const STATUS_MAP = {
 	active: '进行中',
 	completed: '已完成',
 	paused: '已暂停',
 	abandoned: '已放弃'
+}
+
+const ACTION_MENUS = {
+	active: { items: ['编辑', '暂停', '完成', '放弃'], actions: ['edit', 'paused', 'completed', 'abandoned'] },
+	paused: { items: ['编辑', '重启', '完成', '放弃'], actions: ['edit', 'resume', 'completed', 'abandoned'] },
+	completed: { items: ['编辑'], actions: ['edit'] },
+	abandoned: { items: [], actions: [] }
 }
 
 export default {
@@ -96,6 +104,9 @@ export default {
 		canAddStage() {
 			return this.flag?.status === 'active'
 		},
+		showMoreMenu() {
+			return (ACTION_MENUS[this.flag?.status]?.items.length || 0) > 0
+		},
 		showBottomAction() {
 			return this.flag?.status === 'active' || this.flag?.status === 'paused'
 		},
@@ -126,10 +137,17 @@ export default {
 			uni.navigateTo({ url: `/pages/stage/detail?id=${stage.id}` })
 		},
 		goCheckin() {
-			const activeStage = this.stages.find(s => s.status === 'active')
+			if (!canFlagCheckin(this.flag)) {
+				uni.showToast({ title: '当前 Flag 不可打卡', icon: 'none' })
+				return
+			}
+			const activeStage = this.stages.find(s => s.status === 'active' || s.status === 'pending')
 			let url = `/pages/checkin/create?flagId=${this.flagId}`
 			if (activeStage) url += `&stageId=${activeStage.id}`
 			uni.navigateTo({ url })
+		},
+		goEdit() {
+			uni.navigateTo({ url: `/pages/flag/create?id=${this.flagId}` })
 		},
 		async resumeFlag() {
 			await this.updateFlagStatus({ id: this.flagId, status: 'active' })
@@ -156,18 +174,69 @@ export default {
 				showCancel: false
 			})
 		},
-		showActions() {
-			uni.showActionSheet({
-				itemList: ['编辑', '暂停', '完成', '放弃'],
+		getAbandonPunishmentText() {
+			const activeStage = this.stages.find(s => s.status === 'active' || s.status === 'pending')
+			if (activeStage?.punishment) {
+				return `未完成惩罚：${activeStage.punishment}`
+			}
+			return '放弃后将无法继续打卡，且该 Flag 将归档为已放弃状态。'
+		},
+		confirmAbandon() {
+			uni.showModal({
+				title: '确认放弃 Flag？',
+				content: `${this.getAbandonPunishmentText()}\n\n确定要放弃「${this.flag.title}」吗？`,
+				confirmText: '确认放弃',
+				confirmColor: '#d9534f',
 				success: res => {
-					const actions = ['edit', 'paused', 'completed', 'abandoned']
-					const action = actions[res.tapIndex]
-					if (action === 'edit') {
-						uni.showToast({ title: '编辑功能后续支持', icon: 'none' })
-						return
+					if (res.confirm) {
+						this.updateFlagStatus({ id: this.flagId, status: 'abandoned' })
+						uni.showToast({ title: '已放弃', icon: 'none' })
 					}
-					this.updateFlagStatus({ id: this.flagId, status: action })
-					uni.showToast({ title: '状态已更新', icon: 'success' })
+				}
+			})
+		},
+		confirmComplete() {
+			uni.showModal({
+				title: '确认完成 Flag？',
+				content: `确定将「${this.flag.title}」标记为已完成吗？`,
+				success: res => {
+					if (res.confirm) {
+						this.updateFlagStatus({ id: this.flagId, status: 'completed' })
+						uni.showToast({ title: '已完成', icon: 'success' })
+					}
+				}
+			})
+		},
+		handleAction(action) {
+			if (action === 'edit') {
+				this.goEdit()
+				return
+			}
+			if (action === 'resume') {
+				this.resumeFlag()
+				return
+			}
+			if (action === 'paused') {
+				this.updateFlagStatus({ id: this.flagId, status: 'paused' })
+				uni.showToast({ title: '已暂停', icon: 'success' })
+				return
+			}
+			if (action === 'completed') {
+				this.confirmComplete()
+				return
+			}
+			if (action === 'abandoned') {
+				this.confirmAbandon()
+			}
+		},
+		showActions() {
+			const menu = ACTION_MENUS[this.flag?.status]
+			if (!menu || !menu.items.length) return
+			uni.showActionSheet({
+				itemList: menu.items,
+				success: res => {
+					const action = menu.actions[res.tapIndex]
+					this.handleAction(action)
 				}
 			})
 		}

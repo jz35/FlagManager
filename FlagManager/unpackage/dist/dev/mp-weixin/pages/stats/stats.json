@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "统计",
+  "usingComponents": {
+    "fm-section": "../../components/fm-section/fm-section",
+    "fm-heatmap": "../../components/fm-heatmap/fm-heatmap",
+    "fm-stat-card": "../../components/fm-stat-card/fm-stat-card",
+    "fm-progress-bar": "../../components/fm-progress-bar/fm-progress-bar"
+  }
+}

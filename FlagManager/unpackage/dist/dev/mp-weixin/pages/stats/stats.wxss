@@ -1,0 +1,71 @@
+.stats.data-v-3598459f {
+  padding-top: 24rpx;
+  padding-bottom: 32rpx;
+}
+.filter-bar.data-v-3598459f {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.filter-bar__label.data-v-3598459f {
+  font-size: 28rpx;
+  color: #1f2933;
+}
+.filter-bar__picker.data-v-3598459f {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #1f8a5b;
+}
+.filter-bar__arrow.data-v-3598459f {
+  margin-left: 8rpx;
+  font-size: 20rpx;
+}
+.week-chart__row.data-v-3598459f {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.week-chart__row.data-v-3598459f:last-child {
+  margin-bottom: 0;
+}
+.week-chart__label.data-v-3598459f {
+  width: 180rpx;
+  font-size: 22rpx;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+.week-chart__bar-wrap.data-v-3598459f {
+  flex: 1;
+  height: 20rpx;
+  background-color: #f3f4f6;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin: 0 16rpx;
+}
+.week-chart__bar.data-v-3598459f {
+  height: 100%;
+  background-color: #1f8a5b;
+  border-radius: 10rpx;
+  min-width: 4rpx;
+}
+.week-chart__count.data-v-3598459f {
+  width: 48rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #1f2933;
+}
+.flag-row.data-v-3598459f {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.flag-row__title.data-v-3598459f {
+  font-size: 28rpx;
+  color: #1f2933;
+}
+.flag-row__percent.data-v-3598459f {
+  font-size: 28rpx;
+  color: #1f8a5b;
+  font-weight: 600;
+}

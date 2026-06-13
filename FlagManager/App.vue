@@ -1,10 +1,18 @@
 <script>
+import store from '@/store/index.js'
+import { checkDailyReminder } from '@/common/services/reminder.js'
+
 export default {
 	onLaunch() {
 		console.log('FlagManager Launch')
 	},
 	onShow() {
-		console.log('FlagManager Show')
+		const state = store.state.flag
+		checkDailyReminder({
+			stages: state.stages,
+			checkins: state.checkins,
+			flags: state.flags
+		})
 	},
 	onHide() {
 		console.log('FlagManager Hide')

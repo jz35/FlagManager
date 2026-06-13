@@ -1,0 +1,1 @@
+<view class="fm-stat-card data-v-d1b7c9a5"><view wx:for="{{a}}" wx:for-item="item" wx:key="c" class="fm-stat-card__item data-v-d1b7c9a5"><text class="fm-stat-card__value data-v-d1b7c9a5">{{item.a}}</text><text class="fm-stat-card__label data-v-d1b7c9a5">{{item.b}}</text></view></view>

@@ -1,0 +1,14 @@
+.fm-empty.data-v-42f1f5cb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 40rpx;
+}
+.fm-empty__text.data-v-42f1f5cb {
+  font-size: 28rpx;
+  color: #6b7280;
+  margin-bottom: 32rpx;
+}
+.fm-empty__btn.data-v-42f1f5cb {
+  padding: 0 48rpx;
+}

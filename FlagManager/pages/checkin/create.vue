@@ -31,10 +31,19 @@
 				<view
 					v-for="mood in moods"
 					:key="mood"
-					:class="['fm-tag', { active: form.mood === mood }]"
-					@click="form.mood = mood"
+					:class="['fm-tag', { active: form.moodMode === mood }]"
+					@click="selectMood(mood)"
 				>{{ mood }}</view>
 			</view>
+			<input
+				v-if="form.moodMode === customMoodLabel"
+				v-model="form.customMood"
+				class="fm-form-input custom-mood-input"
+				:maxlength="moodMaxLength"
+				placeholder="输入自定义状态"
+				placeholder-class="fm-input-placeholder"
+			/>
+			<text v-if="form.moodMode === customMoodLabel" class="custom-mood-hint">最多 {{ moodMaxLength }} 字</text>
 		</view>
 		<view class="fm-card ai-placeholder">
 			<text class="ai-placeholder__title">AI 检测</text>
@@ -49,8 +58,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { CHECKIN_MOODS } from '@/common/mock/flag-data.js'
+import {
+	CHECKIN_MOODS,
+	CHECKIN_MOOD_CUSTOM,
+	CHECKIN_MOOD_MAX_LENGTH,
+	CUSTOM_MOOD_STORAGE_KEY
+} from '@/common/mock/flag-data.js'
 import { todayStr } from '@/common/utils/date.js'
+import { validateCheckinForm, canFlagCheckin } from '@/common/utils/validate.js'
 
 export default {
 	data() {
@@ -59,9 +74,12 @@ export default {
 			stageId: '',
 			stageIndex: 0,
 			moods: CHECKIN_MOODS,
+			customMoodLabel: CHECKIN_MOOD_CUSTOM,
+			moodMaxLength: CHECKIN_MOOD_MAX_LENGTH,
 			form: {
 				content: '',
-				mood: '一般',
+				moodMode: '一般',
+				customMood: '',
 				images: []
 			}
 		}
@@ -69,10 +87,14 @@ export default {
 	computed: {
 		...mapState('flag', ['stages']),
 		...mapGetters('flag', ['getFlagById', 'getStagesByFlagId']),
+		flag() {
+			return this.getFlagById(this.flagId)
+		},
 		flagTitle() {
-			return this.getFlagById(this.flagId)?.title || ''
+			return this.flag?.title || ''
 		},
 		stageOptions() {
+			if (!canFlagCheckin(this.flag)) return []
 			return this.getStagesByFlagId(this.flagId).filter(s => s.status === 'active' || s.status === 'pending')
 		},
 		currentStage() {
@@ -80,11 +102,24 @@ export default {
 		},
 		currentStageTitle() {
 			return this.currentStage?.title || '请选择阶段'
+		},
+		resolvedMood() {
+			if (this.form.moodMode === CHECKIN_MOOD_CUSTOM) {
+				return this.form.customMood.trim()
+			}
+			return this.form.moodMode
 		}
 	},
 	onLoad(options) {
 		this.flagId = options.flagId || ''
 		this.stageId = options.stageId || ''
+		if (!canFlagCheckin(this.flag)) {
+			uni.showToast({ title: '当前 Flag 不可打卡', icon: 'none' })
+			setTimeout(() => uni.navigateBack(), 800)
+			return
+		}
+		const saved = uni.getStorageSync(CUSTOM_MOOD_STORAGE_KEY)
+		if (saved) this.form.customMood = saved
 		if (this.stageId) {
 			const idx = this.stageOptions.findIndex(s => s.id === this.stageId)
 			if (idx >= 0) this.stageIndex = idx
@@ -92,6 +127,9 @@ export default {
 	},
 	methods: {
 		...mapActions('flag', ['createCheckin']),
+		selectMood(mood) {
+			this.form.moodMode = mood
+		},
 		onStageChange(e) {
 			this.stageIndex = Number(e.detail.value)
 		},
@@ -104,19 +142,22 @@ export default {
 			})
 		},
 		async submit() {
-			if (!this.currentStage) {
-				uni.showToast({ title: '请先添加阶段', icon: 'none' })
+			const result = validateCheckinForm(this.form, {
+				currentStage: this.currentStage,
+				moodMaxLength: this.moodMaxLength
+			})
+			if (!result.ok) {
+				uni.showToast({ title: result.message, icon: 'none' })
 				return
 			}
-			if (!this.form.content.trim()) {
-				uni.showToast({ title: '请填写打卡内容', icon: 'none' })
-				return
+			if (this.form.moodMode === CHECKIN_MOOD_CUSTOM) {
+				uni.setStorageSync(CUSTOM_MOOD_STORAGE_KEY, this.form.customMood.trim())
 			}
 			await this.createCheckin({
 				flagId: this.flagId,
 				stageId: this.currentStage.id,
 				content: this.form.content.trim(),
-				mood: this.form.mood,
+				mood: this.resolvedMood,
 				images: [...this.form.images],
 				checkinDate: todayStr()
 			})
@@ -165,6 +206,17 @@ export default {
 .image-preview {
 	width: 100%;
 	height: 100%;
+}
+
+.custom-mood-input {
+	margin-top: 16rpx;
+}
+
+.custom-mood-hint {
+	display: block;
+	margin-top: 8rpx;
+	font-size: 22rpx;
+	color: $fm-color-text-secondary;
 }
 
 .ai-placeholder {

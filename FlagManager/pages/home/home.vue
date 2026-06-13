@@ -69,6 +69,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { getNavBarInfo } from '@/common/utils/navbar.js'
+import { canFlagCheckin } from '@/common/utils/validate.js'
 import {
 	getCurrentStreak,
 	getMonthCheckinCount,
@@ -93,11 +94,11 @@ export default {
 			]
 		},
 		pendingList() {
-			const pendingStages = getTodayPendingStages(this.stages, this.checkins)
+			const pendingStages = getTodayPendingStages(this.stages, this.checkins, this.flags)
 			return pendingStages.map(stage => ({
 				stage,
 				flag: this.flags.find(f => f.id === stage.flagId)
-			})).filter(item => item.flag)
+			})).filter(item => item.flag && item.flag.status === 'active')
 		}
 	},
 	onLoad() {
@@ -109,7 +110,7 @@ export default {
 			return getFlagProgress(flag, this.stages, this.checkins)
 		},
 		getCurrentStageName(flagId) {
-			const active = this.stages.find(s => s.flagId === flagId && s.status === 'active')
+			const active = this.stages.find(s => s.flagId === flagId && (s.status === 'active' || s.status === 'pending'))
 			return active ? active.title : ''
 		},
 		goCreateFlag() {
@@ -119,6 +120,10 @@ export default {
 			uni.navigateTo({ url: `/pages/flag/detail?id=${flag.id}` })
 		},
 		goCheckin(item) {
+			if (!canFlagCheckin(item.flag)) {
+				uni.showToast({ title: '当前 Flag 不可打卡', icon: 'none' })
+				return
+			}
 			uni.navigateTo({
 				url: `/pages/checkin/create?flagId=${item.flag.id}&stageId=${item.stage.id}`
 			})
