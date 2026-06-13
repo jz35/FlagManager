@@ -1,114 +1,174 @@
 <p align="center">
-  <img src="FlagManager/FlagManagerLOGO.png" alt="FlagManager Logo" width="160" />
+  <img src="FlagManager/FlagManagerLOGO.png" alt="FlagManager Logo" width="140" />
 </p>
 
 <h1 align="center">FlagManager</h1>
 
+<p align="center"><strong>把立下的 Flag，一步步兑现掉</strong></p>
+
 <p align="center">
-  把立下的 Flag，一步步兑现掉
+  面向大学生的长期目标管理产品 · 微信小程序 + 后端 API
 </p>
 
 <p align="center">
-  <strong>面向大学生的长期目标管理微信小程序</strong>
-</p>
-
-<p align="center">
-  uni-app · Vue 3 · Vuex · 微信小程序
+  <a href="#快速开始">快速开始</a>
+  ·
+  <a href="#项目结构">项目结构</a>
+  ·
+  <a href="#技术栈">技术栈</a>
+  ·
+  <a href="#开发进度">开发进度</a>
 </p>
 
 ---
 
 ## 项目简介
 
-FlagManager 是一款帮助大学生管理长期目标的微信小程序。不同于普通待办清单，它围绕 **Flag → 阶段计划 → 打卡 → 统计** 构建完整闭环，让学习、健身、阅读、考证等长期目标可以被拆解、追踪和复盘。
+FlagManager 帮助大学生管理长期目标。产品围绕 **Flag → 阶段计划 → 打卡 → 统计** 形成闭环，适用于学习、健身、阅读、考证等需要持续投入的目标。
 
-Logo 中的旗帜代表目标，日历代表持续打卡，勾选代表兑现承诺——这也是 FlagManager 想传递的产品理念。
+与待办清单不同，FlagManager 强调：
+
+- 目标有生命周期（进行中 / 暂停 / 完成 / 放弃）
+- 大目标可拆成带周期的阶段
+- 打卡记录与统计可视化，便于复盘
+
+当前仓库包含：
+
+| 部分 | 说明 | 状态 |
+|------|------|------|
+| `FlagManager/` | uni-app 微信小程序前端 | 核心流程已完成 |
+| `backend/` | FastAPI 1.0.0 后端 API | 已实现，待前后端联调 |
+
+---
 
 ## 核心功能
 
 | 模块 | 能力 |
 |------|------|
-| 首页 | 今日概览、待打卡提醒、进行中 Flag、已暂停折叠恢复 |
-| Flag 管理 | 创建 / 编辑 / 详情 / 全部列表，支持多状态筛选 |
-| 阶段计划 | 目标、周期、打卡频率、奖惩设置，AI 阶段建议（Mock） |
-| 打卡 | 文字记录、图片上传与预览、预设与自定义今日状态 |
-| 统计 | 热力图、近 4 周条形图、连续打卡与 Flag 进度 |
-| 我的 | 微信登录、数据概览、Flag 列表入口 |
+| 首页 | 今日概览、待打卡提醒、进行中 Flag、暂停 Flag 恢复 |
+| Flag | 创建 / 编辑 / 详情 / 列表，多状态筛选 |
+| 阶段 | 目标、周期、打卡频率、奖惩设置 |
+| 打卡 | 文字记录、图片、今日状态（预设 / 自定义） |
+| 统计 | 热力图、连续打卡、Flag 进度 |
+| 我的 | 微信登录、数据概览 |
 
 ### Flag 生命周期
 
 | 状态 | 行为 |
 |------|------|
-| 进行中 | 正常打卡、添加阶段、编辑信息 |
-| 已暂停 | 首页或详情页可恢复；不可打卡 |
-| 已完成 | 只读查看历史记录与统计 |
-| 已放弃 | 归档查看；统计页进度显示为 0% |
+| 进行中 | 可打卡、添加阶段、编辑 |
+| 已暂停 | 可恢复；不可打卡 |
+| 已完成 | 只读查看历史与统计 |
+| 已放弃 | 归档；统计进度为 0% |
 
-### 业务规则亮点
-
-- 暂停 / 完成 / 放弃的 Flag 全链路禁止打卡
-- 未开始阶段在首次打卡后自动变为进行中
-- 阶段结束后按打卡次数判定达标，弹出奖励或惩罚提示
-- 放弃 Flag 需二次确认并展示惩罚文案
-- 本地数据持久化，关闭小程序后数据不丢失
+---
 
 ## 技术栈
+
+### 前端
 
 | 类别 | 选型 |
 |------|------|
 | 框架 | [uni-app](https://uniapp.dcloud.net.cn/)（Vue 3） |
-| 状态管理 | Vuex + 本地 Storage 持久化 |
-| 目标平台 | 微信小程序（可扩展 H5 / App） |
-| 数据层 | 本地 Mock + `uni.setStorageSync` |
+| 状态 | Vuex + 本地 Storage |
+| 平台 | 微信小程序 |
 
-## 目录结构
+### 后端
+
+| 类别 | 选型 |
+|------|------|
+| 框架 | FastAPI |
+| 架构 | DDD 分层单体 |
+| 数据库 | PostgreSQL 16 |
+| 缓存 | Redis 7 |
+| ORM / 迁移 | SQLAlchemy 2.0 async + Alembic |
+| 部署 | Docker Compose |
+
+---
+
+## 项目结构
 
 ```text
 FlagManager/
-├── README.md
-├── FlagManager/                    # uni-app 工程根目录
-│   ├── FlagManagerLOGO.png         # 小程序 Logo
-│   ├── pages/
-│   │   ├── home/                   # 首页
-│   │   ├── stats/                  # 统计
-│   │   ├── mine/                   # 我的
-│   │   ├── flag/                   # Flag 创建 / 编辑 / 详情 / 列表
-│   │   ├── stage/                  # 阶段创建 / 详情
-│   │   └── checkin/                # 打卡
-│   ├── components/                   # fm-* 业务组件
-│   ├── common/
-│   │   ├── mock/                   # Mock 数据与常量
-│   │   ├── services/               # 登录、AI、提醒等服务
-│   │   ├── styles/                 # 主题样式
-│   │   └── utils/                  # 校验、统计等工具
-│   ├── store/                      # Vuex 模块与持久化
-│   ├── static/                     # 静态资源
-│   ├── pages.json
-│   └── manifest.json
-└── .gitignore
+├── README.md                 # 本文件
+├── .gitignore
+├── FlagManager/              # uni-app 前端工程
+│   ├── pages/                # 页面（home / stats / mine / flag / stage / checkin）
+│   ├── components/           # fm-* 业务组件
+│   ├── common/               # mock、services、utils、styles
+│   ├── store/                # Vuex 与持久化
+│   └── static/               # 静态资源
+└── backend/                  # FastAPI 后端 1.0.0
+    ├── app/                  # api / application / domain / infrastructure
+    ├── alembic/              # 数据库迁移
+    ├── tests/                # 单元与集成测试
+    ├── docker-compose.yml
+    └── pyproject.toml
 ```
+
+---
 
 ## 快速开始
 
-### 环境要求
+### 前端（微信小程序）
 
-- [HBuilderX](https://www.dcloud.io/hbuilderx.html)（推荐）
+**环境**
+
+- [HBuilderX](https://www.dcloud.io/hbuilderx.html)
 - [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
 
-### 运行步骤
+**步骤**
 
-1. 克隆本仓库到本地
-2. 使用 HBuilderX 打开 `FlagManager/` 目录
-3. 菜单选择 **运行 → 运行到小程序模拟器 → 微信开发者工具**
-4. 在微信开发者工具中预览与调试
+1. 克隆仓库
+2. 用 HBuilderX 打开 `FlagManager/` 目录
+3. 运行 → 运行到小程序模拟器 → 微信开发者工具
 
-### 开发提示
+**提示**
 
-- 开发阶段可勾选 **不校验合法域名**，以便 Mock 图片正常加载
-- TabBar 图标位于 `static/tabbar/`
-- 业务数据保存在本地 Storage，键名为 `flagmanager_state`
+- 开发时可勾选「不校验合法域名」
+- 本地数据键名：`flagmanager_state`
+- 前端当前使用 Vuex + Mock，尚未接入后端 HTTP
 
-## 页面路由
+### 后端（API）
+
+**Docker 一键启动（推荐）**
+
+```bash
+cd backend
+cp .env.example .env
+docker compose up --build
+```
+
+| 地址 | 说明 |
+|------|------|
+| http://localhost:8000/health | 健康检查 |
+| http://localhost:8000/docs | OpenAPI 文档 |
+
+**本地开发**
+
+```bash
+cd backend
+pip install -e ".[dev]"
+docker compose up -d postgres redis
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+**运行测试**
+
+```bash
+cd backend
+docker compose up -d postgres redis
+pytest
+```
+
+API 前缀：`/api/v1`。响应格式：`{ "data": {}, "message": "ok" }`。
+
+更多接口说明见 [backend/README.md](backend/README.md)。
+
+---
+
+## 页面路由（前端）
 
 | 路径 | 说明 |
 |------|------|
@@ -122,27 +182,32 @@ FlagManager/
 | `pages/stage/detail` | 阶段详情 |
 | `pages/checkin/create` | 今日打卡 |
 
+---
+
 ## 开发进度
 
 **已完成**
 
-- Flag / 阶段 / 打卡完整前端流程
-- Flag 编辑、多状态管理与筛选
-- 表单校验、打卡拦截、阶段奖惩判定
-- 热力图、周报条形图与基础统计
-- 微信登录（MVP）、本地数据持久化
-- AI 阶段建议（Mock）、每日待打卡提醒
+- 前端：Flag / 阶段 / 打卡完整流程、校验、统计、本地持久化
+- 后端 1.0.0：登录、Flag、阶段、打卡、统计 REST API
+- 后端：PostgreSQL 模型、Alembic 迁移、Redis 缓存、Docker 编排
+- 后端：20 项 pytest 测试通过
 
 **规划中**
 
-- 云数据库与真实图片上传
-- AI 打卡检测与阶段总结报告
-- 微信订阅消息推送
-- VIP 与社交监督等扩展能力
+- 前后端联调，替换前端 Mock 层
+- 真实图片上传与对象存储
+- AI 阶段建议 / 打卡检测、订阅消息等扩展能力
+
+---
 
 ## 仓库说明
 
-本仓库包含可运行的前端工程、Logo 与 README。需求文档、设计文档、低保真原型等内部资料不纳入版本管理。
+- 可运行前端工程、后端 API、Logo 与文档纳入版本管理
+- 需求文档、设计文档等内部资料默认不提交（见 `.gitignore`）
+- 请勿将 `.env`、密钥等敏感文件提交到仓库
+
+---
 
 ## License
 
