@@ -15,6 +15,17 @@
 			<fm-heatmap :days="heatmapDays" @dayClick="onDayClick" />
 		</view>
 
+		<fm-section title="近4周打卡" />
+		<view class="fm-card week-chart">
+			<view v-for="item in weeklyChart" :key="item.label" class="week-chart__row">
+				<text class="week-chart__label">{{ item.label }}</text>
+				<view class="week-chart__bar-wrap">
+					<view class="week-chart__bar" :style="{ width: item.percent + '%' }" />
+				</view>
+				<text class="week-chart__count">{{ item.count }}</text>
+			</view>
+		</view>
+
 		<fm-section title="数据概览" />
 		<fm-stat-card :items="overviewItems" />
 
@@ -41,6 +52,7 @@ import {
 	getCheckinsByDate
 } from '@/common/utils/stats.js'
 import { formatDate } from '@/common/utils/date.js'
+import { todayStr } from '@/common/utils/date.js'
 
 export default {
 	data() {
@@ -61,6 +73,27 @@ export default {
 		},
 		heatmapDays() {
 			return buildHeatmapDays(this.filteredCheckins)
+		},
+		weeklyChart() {
+			const checkins = this.filteredCheckins
+			const today = new Date(todayStr().replace(/-/g, '/'))
+			const weeks = []
+			for (let w = 3; w >= 0; w--) {
+				const end = new Date(today)
+				end.setDate(end.getDate() - w * 7)
+				const start = new Date(end)
+				start.setDate(start.getDate() - 6)
+				const startStr = formatDate(start)
+				const endStr = formatDate(end)
+				const count = checkins.filter(c => c.checkinDate >= startStr && c.checkinDate <= endStr).length
+				weeks.push({
+					label: `${formatDate(start, 'MM.DD')}-${formatDate(end, 'MM.DD')}`,
+					count,
+					percent: 0
+				})
+			}
+			const max = Math.max(...weeks.map(w => w.count), 1)
+			return weeks.map(w => ({ ...w, percent: Math.round((w.count / max) * 100) }))
 		},
 		overviewItems() {
 			const checkins = this.filteredCheckins
@@ -105,6 +138,7 @@ export default {
 <style lang="scss" scoped>
 .stats {
 	padding-top: 24rpx;
+	padding-bottom: 32rpx;
 }
 
 .filter-bar {
@@ -128,6 +162,46 @@ export default {
 .filter-bar__arrow {
 	margin-left: 8rpx;
 	font-size: 20rpx;
+}
+
+.week-chart__row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20rpx;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.week-chart__label {
+	width: 180rpx;
+	font-size: 22rpx;
+	color: $fm-color-text-secondary;
+	flex-shrink: 0;
+}
+
+.week-chart__bar-wrap {
+	flex: 1;
+	height: 20rpx;
+	background-color: #f3f4f6;
+	border-radius: 10rpx;
+	overflow: hidden;
+	margin: 0 16rpx;
+}
+
+.week-chart__bar {
+	height: 100%;
+	background-color: $fm-color-primary;
+	border-radius: 10rpx;
+	min-width: 4rpx;
+}
+
+.week-chart__count {
+	width: 48rpx;
+	text-align: right;
+	font-size: 24rpx;
+	color: $fm-color-text;
 }
 
 .flag-row {

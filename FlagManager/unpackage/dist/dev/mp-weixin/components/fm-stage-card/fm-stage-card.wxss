@@ -1,0 +1,32 @@
+.fm-stage-card.data-v-44b55fec {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+.fm-stage-card__header.data-v-44b55fec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.fm-stage-card__title.data-v-44b55fec {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1f2933;
+}
+.fm-stage-card__rewards.data-v-44b55fec {
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.fm-stage-card__reward.data-v-44b55fec {
+  font-size: 24rpx;
+  color: #f5a623;
+}
+.fm-stage-card__punishment.data-v-44b55fec {
+  font-size: 24rpx;
+  color: #d9534f;
+}

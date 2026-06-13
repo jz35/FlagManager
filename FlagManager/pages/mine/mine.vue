@@ -5,6 +5,8 @@
 			<view class="user-card__info">
 				<text class="user-card__name">{{ user.nickname }}</text>
 				<text class="user-card__bio">{{ user.bio }}</text>
+				<text v-if="isLoggedIn" class="user-card__login-tag">已登录</text>
+				<button v-else class="user-card__login-btn" size="mini" @click="handleLogin">微信登录</button>
 			</view>
 		</view>
 
@@ -29,18 +31,22 @@
 				<text>关于项目</text>
 				<view class="fm-chevron-right menu-item__arrow" />
 			</view>
+			<view v-if="isLoggedIn" class="menu-item" @click="handleLogout">
+				<text>退出登录</text>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { getTotalCheckinDays } from '@/common/utils/stats.js'
+import { wxLogin, getUserProfile } from '@/common/services/auth.js'
 
 export default {
 	computed: {
 		...mapState('flag', ['user', 'flags', 'checkins']),
-		...mapGetters('flag', ['completedFlagCount']),
+		...mapGetters('flag', ['completedFlagCount', 'isLoggedIn']),
 		avatarText() {
 			return (this.user.nickname || '用').slice(0, 1)
 		},
@@ -53,8 +59,32 @@ export default {
 		}
 	},
 	methods: {
+		...mapActions('flag', ['login', 'logout']),
 		goFlagList() {
 			uni.navigateTo({ url: '/pages/flag/list' })
+		},
+		async handleLogin() {
+			try {
+				const { openId } = await wxLogin()
+				let profile = { nickName: '微信用户', avatarUrl: '' }
+				try {
+					profile = await getUserProfile()
+				} catch (e) {
+					// 用户拒绝授权时使用默认昵称
+				}
+				await this.login({
+					openId,
+					nickname: profile.nickName,
+					avatarUrl: profile.avatarUrl
+				})
+				uni.showToast({ title: '登录成功', icon: 'success' })
+			} catch (e) {
+				uni.showToast({ title: '登录失败', icon: 'none' })
+			}
+		},
+		handleLogout() {
+			this.logout()
+			uni.showToast({ title: '已退出', icon: 'none' })
 		},
 		showAbout() {
 			uni.showModal({
@@ -88,6 +118,7 @@ export default {
 	line-height: 100rpx;
 	text-align: center;
 	margin-right: 24rpx;
+	flex-shrink: 0;
 }
 
 .user-card__name {
@@ -101,6 +132,19 @@ export default {
 	display: block;
 	font-size: 26rpx;
 	color: $fm-color-text-secondary;
+	margin-bottom: 12rpx;
+}
+
+.user-card__login-tag {
+	font-size: 22rpx;
+	color: $fm-color-primary;
+}
+
+.user-card__login-btn {
+	margin: 0;
+	background-color: $fm-color-primary;
+	color: #fff;
+	font-size: 24rpx;
 }
 
 .menu-list {

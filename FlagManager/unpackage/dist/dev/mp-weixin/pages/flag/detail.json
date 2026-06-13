@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "Flag 详情",
+  "usingComponents": {
+    "fm-progress-bar": "../../components/fm-progress-bar/fm-progress-bar",
+    "fm-section": "../../components/fm-section/fm-section",
+    "fm-heatmap": "../../components/fm-heatmap/fm-heatmap",
+    "fm-stage-card": "../../components/fm-stage-card/fm-stage-card",
+    "fm-checkin-card": "../../components/fm-checkin-card/fm-checkin-card"
+  }
+}

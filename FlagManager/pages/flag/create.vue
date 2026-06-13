@@ -45,20 +45,22 @@
 		</view>
 
 		<view class="fm-fixed-bottom">
-			<button class="fm-btn-primary fm-btn-block" @click="submit">创建 Flag</button>
+			<button class="fm-btn-primary fm-btn-block" @click="submit">{{ isEdit ? '保存修改' : '创建 Flag' }}</button>
 		</view>
 	</view>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { FLAG_CATEGORIES } from '@/common/mock/flag-data.js'
 import { todayStr } from '@/common/utils/date.js'
+import { validateFlagForm } from '@/common/utils/validate.js'
 
 export default {
 	data() {
 		const today = todayStr()
 		return {
+			flagId: '',
 			categories: FLAG_CATEGORIES,
 			form: {
 				title: '',
@@ -70,8 +72,34 @@ export default {
 			}
 		}
 	},
+	computed: {
+		...mapGetters('flag', ['getFlagById']),
+		isEdit() {
+			return !!this.flagId
+		}
+	},
+	onLoad(options) {
+		this.flagId = options.id || ''
+		if (this.isEdit) {
+			uni.setNavigationBarTitle({ title: '编辑 Flag' })
+			this.loadFlag()
+		}
+	},
 	methods: {
-		...mapActions('flag', ['createFlag']),
+		...mapActions('flag', ['createFlag', 'updateFlag']),
+		loadFlag() {
+			const flag = this.getFlagById(this.flagId)
+			if (!flag) return
+			const isCustom = !FLAG_CATEGORIES.slice(0, -1).includes(flag.category)
+			this.form = {
+				title: flag.title,
+				description: flag.description || '',
+				category: isCustom ? '自定义' : flag.category,
+				customCategory: isCustom ? flag.category : '',
+				startDate: flag.startDate,
+				targetDate: flag.targetDate
+			}
+		},
 		selectCategory(cat) {
 			this.form.category = cat
 			if (cat !== '自定义') {
@@ -85,32 +113,28 @@ export default {
 			this.form.targetDate = e.detail.value
 		},
 		async submit() {
-			if (!this.form.title.trim()) {
-				uni.showToast({ title: '请填写 Flag 名称', icon: 'none' })
-				return
-			}
-			if (this.form.category === '自定义' && !this.form.customCategory.trim()) {
-				uni.showToast({ title: '请输入自定义分类', icon: 'none' })
-				return
-			}
-			if (!this.form.targetDate) {
-				uni.showToast({ title: '请选择目标完成日期', icon: 'none' })
-				return
-			}
-			if (this.form.targetDate < this.form.startDate) {
-				uni.showToast({ title: '完成日期不能早于开始日期', icon: 'none' })
+			const result = validateFlagForm(this.form)
+			if (!result.ok) {
+				uni.showToast({ title: result.message, icon: 'none' })
 				return
 			}
 			const category = this.form.category === '自定义'
 				? this.form.customCategory.trim()
 				: this.form.category
-			const flag = await this.createFlag({
+			const payload = {
 				title: this.form.title.trim(),
-				description: this.form.description,
+				description: this.form.description.trim(),
 				category,
 				startDate: this.form.startDate,
 				targetDate: this.form.targetDate
-			})
+			}
+			if (this.isEdit) {
+				await this.updateFlag({ id: this.flagId, ...payload })
+				uni.showToast({ title: '保存成功', icon: 'success' })
+				setTimeout(() => uni.navigateBack(), 500)
+				return
+			}
+			const flag = await this.createFlag(payload)
 			uni.showToast({ title: '创建成功', icon: 'success' })
 			setTimeout(() => {
 				uni.redirectTo({ url: `/pages/flag/detail?id=${flag.id}` })

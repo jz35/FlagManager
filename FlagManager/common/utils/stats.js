@@ -56,7 +56,7 @@ export function getMonthCheckinCount(checkins, date = new Date()) {
 
 import { parseCheckinFrequency } from '@/common/mock/flag-data.js'
 
-function getExpectedCheckinCount(stage) {
+export function getExpectedCheckinCount(stage) {
 	const totalDays = Math.max(1, daysBetween(stage.startDate, stage.endDate) + 1)
 	const { period, times } = parseCheckinFrequency(stage.checkinFrequency)
 	if (period === 'day') return totalDays * times
@@ -103,14 +103,28 @@ export function getCheckinsByDate(checkins, date) {
 	return checkins.filter(c => c.checkinDate === date)
 }
 
-export function getTodayPendingStages(stages, checkins) {
+export function getTodayPendingStages(stages, checkins, flags = []) {
 	const today = todayStr()
+	const activeFlagIds = new Set(
+		flags.filter(f => f.status === 'active').map(f => f.id)
+	)
 	return stages.filter(stage => {
-		if (stage.status !== 'active') return false
+		if (flags.length && !activeFlagIds.has(stage.flagId)) return false
+		if (stage.status !== 'active' && stage.status !== 'pending') return false
 		if (today < stage.startDate || today > stage.endDate) return false
 		const hasToday = checkins.some(c => c.stageId === stage.id && c.checkinDate === today)
 		return !hasToday
 	})
+}
+
+export function evaluateStageResult(stage, checkins) {
+	const expected = getExpectedCheckinCount(stage)
+	const actual = checkins.filter(c => c.stageId === stage.id).length
+	return { expected, actual, passed: actual >= expected }
+}
+
+export function isStageEnded(stage, date = todayStr()) {
+	return date > stage.endDate
 }
 
 export function getStageMissCount(stage, checkins) {

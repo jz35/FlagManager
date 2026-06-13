@@ -1,0 +1,53 @@
+.fm-flag-card.data-v-83aeb05a {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+.fm-flag-card--muted.data-v-83aeb05a {
+  background-color: #f3f4f6;
+  box-shadow: none;
+}
+.fm-flag-card--archived.data-v-83aeb05a {
+  background-color: #f9fafb;
+  box-shadow: none;
+  opacity: 0.92;
+}
+.fm-flag-card__header.data-v-83aeb05a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+.fm-flag-card__title.data-v-83aeb05a {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2933;
+  flex: 1;
+  margin-right: 16rpx;
+}
+.fm-flag-card--archived .fm-flag-card__title.data-v-83aeb05a {
+  color: #6b7280;
+}
+.fm-flag-card__category.data-v-83aeb05a {
+  font-size: 22rpx;
+  color: #1f8a5b;
+  background-color: #e9f7ef;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+.fm-flag-card__date.data-v-83aeb05a {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-bottom: 16rpx;
+  display: block;
+}
+.fm-flag-card__stage.data-v-83aeb05a {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-top: 12rpx;
+  display: block;
+}

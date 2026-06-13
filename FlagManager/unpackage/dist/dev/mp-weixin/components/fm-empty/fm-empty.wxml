@@ -1,0 +1,1 @@
+<view class="fm-empty data-v-42f1f5cb"><text class="fm-empty__text data-v-42f1f5cb">{{a}}</text><button wx:if="{{b}}" class="fm-btn-outline fm-empty__btn data-v-42f1f5cb" bindtap="{{d}}">{{c}}</button></view>

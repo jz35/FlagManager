@@ -4,6 +4,12 @@
 			<view class="fm-form-label">所属 Flag</view>
 			<view class="fm-form-display readonly">{{ flagTitle }}</view>
 		</view>
+
+		<view class="fm-card ai-suggest" @click="showAiSuggest">
+			<text class="ai-suggest__title">AI 建议阶段</text>
+			<text class="ai-suggest__desc">根据 Flag 分类生成阶段规划参考</text>
+		</view>
+
 		<view class="fm-form-item">
 			<view class="fm-form-label">阶段名称</view>
 			<input
@@ -94,6 +100,8 @@ import {
 	buildCustomFrequency
 } from '@/common/mock/flag-data.js'
 import { todayStr } from '@/common/utils/date.js'
+import { validateStageForm } from '@/common/utils/validate.js'
+import { suggestStages, formatStageSuggestions } from '@/common/services/ai.js'
 
 export default {
 	data() {
@@ -117,8 +125,11 @@ export default {
 	},
 	computed: {
 		...mapGetters('flag', ['getFlagById']),
+		flag() {
+			return this.getFlagById(this.flagId)
+		},
 		flagTitle() {
-			return this.getFlagById(this.flagId)?.title || ''
+			return this.flag?.title || ''
 		},
 		periodLabel() {
 			const item = this.periodOptions.find(p => p.value === this.customPeriod)
@@ -142,23 +153,37 @@ export default {
 		onTimesChange(e) {
 			this.customTimesIndex = Number(e.detail.value)
 		},
+		showAiSuggest() {
+			if (!this.flag) return
+			const suggestions = suggestStages(this.flag.title, this.flag.category)
+			uni.showModal({
+				title: 'AI 阶段建议',
+				content: formatStageSuggestions(suggestions),
+				confirmText: '填入第一项',
+				success: res => {
+					if (res.confirm && suggestions[0]) {
+						const first = suggestions[0]
+						this.form.title = first.title
+						this.form.goal = first.goal
+						this.form.reward = first.reward
+						this.form.punishment = first.punishment
+					}
+				}
+			})
+		},
 		async submit() {
-			if (!this.form.title.trim()) {
-				uni.showToast({ title: '请填写阶段名称', icon: 'none' })
-				return
-			}
-			if (!this.form.endDate) {
-				uni.showToast({ title: '请选择结束日期', icon: 'none' })
-				return
-			}
-			if (this.form.endDate < this.form.startDate) {
-				uni.showToast({ title: '结束日期不能早于开始日期', icon: 'none' })
+			const result = validateStageForm(this.form)
+			if (!result.ok) {
+				uni.showToast({ title: result.message, icon: 'none' })
 				return
 			}
 			await this.createStage({
 				flagId: this.flagId,
 				...this.form,
 				title: this.form.title.trim(),
+				goal: this.form.goal.trim(),
+				reward: this.form.reward.trim(),
+				punishment: this.form.punishment.trim(),
 				checkinFrequency: this.checkinFrequency
 			})
 			uni.showToast({ title: '创建成功', icon: 'success' })
@@ -177,6 +202,24 @@ export default {
 }
 
 .readonly {
+	color: $fm-color-text-secondary;
+}
+
+.ai-suggest {
+	margin-bottom: 24rpx;
+	padding: 24rpx 28rpx;
+}
+
+.ai-suggest__title {
+	display: block;
+	font-size: 28rpx;
+	font-weight: 500;
+	color: $fm-color-primary;
+	margin-bottom: 8rpx;
+}
+
+.ai-suggest__desc {
+	font-size: 24rpx;
 	color: $fm-color-text-secondary;
 }
 

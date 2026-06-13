@@ -59,7 +59,13 @@ export const STAGE_STATUS = {
 	FAILED: 'failed'
 }
 
-export const CHECKIN_MOODS = ['轻松', '一般', '有点累']
+export const CHECKIN_MOODS = ['轻松', '一般', '有点累', '自定义']
+
+export const CHECKIN_MOOD_CUSTOM = '自定义'
+
+export const CHECKIN_MOOD_MAX_LENGTH = 6
+
+export const CUSTOM_MOOD_STORAGE_KEY = 'flagmanager_custom_moods'
 
 export const CHECKIN_FREQUENCIES = [
 	{ label: '每天', value: 'daily' },
@@ -71,7 +77,9 @@ export const mockUser = {
 	id: 'user_1',
 	nickname: '用户昵称',
 	avatarUrl: '',
-	bio: '大学生开发者'
+	bio: '大学生开发者',
+	loggedIn: false,
+	openId: ''
 }
 
 export const mockFlags = [

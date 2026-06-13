@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "fm-stat-card": "../../components/fm-stat-card/fm-stat-card",
+    "fm-section": "../../components/fm-section/fm-section",
+    "fm-flag-card": "../../components/fm-flag-card/fm-flag-card",
+    "fm-empty": "../../components/fm-empty/fm-empty"
+  }
+}

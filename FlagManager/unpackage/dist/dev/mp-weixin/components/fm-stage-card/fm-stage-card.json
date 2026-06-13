@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "fm-progress-bar": "../fm-progress-bar/fm-progress-bar"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="fm-section data-v-1a291c55"><view class="fm-section__header data-v-1a291c55"><text class="fm-section__title data-v-1a291c55">{{a}}</text><text wx:if="{{b}}" class="fm-section__action data-v-1a291c55" bindtap="{{d}}">{{c}}</text></view><slot/></view>

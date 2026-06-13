@@ -1,19 +1,38 @@
 import { mockUser, mockFlags, mockStages, mockCheckins } from '@/common/mock/flag-data.js'
+import { loadPersistedState } from './persist.js'
 
 let idCounter = 100
+
+function syncIdCounter(flags, stages, checkins) {
+	const ids = [
+		...flags.map(f => f.id),
+		...stages.map(s => s.id),
+		...checkins.map(c => c.id)
+	]
+	ids.forEach(id => {
+		const num = Number(String(id).split('_').pop())
+		if (!Number.isNaN(num) && num > idCounter) idCounter = num
+	})
+}
 
 function nextId(prefix) {
 	idCounter += 1
 	return `${prefix}_${idCounter}`
 }
 
+const persisted = loadPersistedState()
+const initialFlags = persisted?.flags || [...mockFlags]
+const initialStages = persisted?.stages || [...mockStages]
+const initialCheckins = persisted?.checkins || [...mockCheckins]
+syncIdCounter(initialFlags, initialStages, initialCheckins)
+
 const flagModule = {
 	namespaced: true,
 	state: {
-		user: { ...mockUser },
-		flags: [...mockFlags],
-		stages: [...mockStages],
-		checkins: [...mockCheckins],
+		user: persisted?.user || { ...mockUser, loggedIn: false, openId: '' },
+		flags: initialFlags,
+		stages: initialStages,
+		checkins: initialCheckins,
 		currentFlagId: null
 	},
 	getters: {
@@ -36,11 +55,17 @@ const flagModule = {
 			state.checkins.filter(c => c.stageId === stageId).sort((a, b) => b.checkinDate.localeCompare(a.checkinDate)),
 		completedFlagCount(state) {
 			return state.flags.filter(f => f.status === 'completed').length
+		},
+		isLoggedIn(state) {
+			return !!state.user.loggedIn
 		}
 	},
 	mutations: {
 		SET_CURRENT_FLAG(state, id) {
 			state.currentFlagId = id
+		},
+		SET_USER(state, user) {
+			state.user = { ...state.user, ...user }
 		},
 		ADD_FLAG(state, flag) {
 			state.flags.unshift(flag)
@@ -52,15 +77,19 @@ const flagModule = {
 		ADD_STAGE(state, stage) {
 			state.stages.push(stage)
 		},
+		UPDATE_STAGE(state, stage) {
+			const idx = state.stages.findIndex(s => s.id === stage.id)
+			if (idx >= 0) state.stages.splice(idx, 1, { ...state.stages[idx], ...stage })
+		},
 		ADD_CHECKIN(state, checkin) {
 			state.checkins.push(checkin)
 		}
 	},
 	actions: {
-		createFlag({ commit }, payload) {
+		createFlag({ commit, state }, payload) {
 			const flag = {
 				id: nextId('flag'),
-				userId: 'user_1',
+				userId: state.user.id,
 				status: 'active',
 				cover: '',
 				...payload
@@ -68,29 +97,64 @@ const flagModule = {
 			commit('ADD_FLAG', flag)
 			return flag
 		},
+		updateFlag({ commit, getters }, payload) {
+			const flag = getters.getFlagById(payload.id)
+			if (!flag) return null
+			const updated = { ...flag, ...payload }
+			commit('UPDATE_FLAG', updated)
+			return updated
+		},
 		createStage({ commit }, payload) {
 			const stage = {
 				id: nextId('stage'),
-				status: 'active',
+				status: 'pending',
+				reward: '',
+				punishment: '',
 				...payload
 			}
 			commit('ADD_STAGE', stage)
 			return stage
 		},
-		createCheckin({ commit }, payload) {
+		updateStage({ commit, getters }, payload) {
+			const stage = getters.getStageById(payload.id)
+			if (!stage) return null
+			const updated = { ...stage, ...payload }
+			commit('UPDATE_STAGE', updated)
+			return updated
+		},
+		createCheckin({ commit, getters }, payload) {
+			const stage = getters.getStageById(payload.stageId)
 			const checkin = {
 				id: nextId('checkin'),
-				userId: 'user_1',
+				userId: getters.getFlagById(payload.flagId)?.userId || 'user_1',
 				images: [],
 				createdAt: payload.checkinDate,
 				...payload
 			}
 			commit('ADD_CHECKIN', checkin)
+			if (stage && stage.status === 'pending') {
+				commit('UPDATE_STAGE', { ...stage, status: 'active' })
+			}
 			return checkin
 		},
 		updateFlagStatus({ commit, getters }, { id, status }) {
 			const flag = getters.getFlagById(id)
 			if (flag) commit('UPDATE_FLAG', { ...flag, status })
+		},
+		login({ commit }, { openId, nickname, avatarUrl }) {
+			commit('SET_USER', {
+				openId,
+				nickname: nickname || '微信用户',
+				avatarUrl: avatarUrl || '',
+				loggedIn: true
+			})
+		},
+		logout({ commit, state }) {
+			commit('SET_USER', {
+				...state.user,
+				loggedIn: false,
+				openId: ''
+			})
 		}
 	}
 }

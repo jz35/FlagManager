@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "我的 Flag",
+  "usingComponents": {
+    "fm-flag-card": "../../components/fm-flag-card/fm-flag-card",
+    "fm-empty": "../../components/fm-empty/fm-empty"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "我的",
+  "usingComponents": {
+    "fm-section": "../../components/fm-section/fm-section",
+    "fm-stat-card": "../../components/fm-stat-card/fm-stat-card"
+  }
+}
